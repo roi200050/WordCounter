@@ -1,0 +1,22 @@
+{
+  "name": "wordcounter",
+  "version": "1.0.0",
+  "description": "Lemonade Exercise",
+  "main": "app.js",
+  "scripts": {
+    "start": "node src/app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/roi200050/WordCounter.git"
+  },
+  "author": "Roi Menahem",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/roi200050/WordCounter/issues"
+  },
+  "homepage": "https://github.com/roi200050/WordCounter#readme",
+  "dependencies": {
+    "request": "^2.81.0"
+  }
+}
