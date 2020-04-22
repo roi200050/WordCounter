@@ -1,19 +1,19 @@
-class wordCounter{
-    constructor(){
+class wordCounter {
+    constructor() {
         // wordsCount Map will store each word as key, 
         //   and number of appearance as value
-        this.wordsCount = {} ;
+        this.wordsCount = {};
     }
 
-    count(input){
+    count(input) {
         return new Promise((resolve) => {
             // Iterate over words
             input.split(" ").forEach(word => {
                 // Clean the input, And lowercase
-                word = word.replace(/[,0-9_-]+/g, '').toLowerCase();
+                word = word.replace(/[ ,0-9_-]+/g, '').toLowerCase();
 
                 // Add to count
-                if(this.wordsCount[word]){
+                if (this.wordsCount[word]) {
                     this.wordsCount[word]++
                     return
                 }
@@ -24,8 +24,8 @@ class wordCounter{
     }
 
     getCounter(word) {
-        return this.wordsCount[word.toLowerCase()]?
-            this.wordsCount[word.toLowerCase()]:
+        return this.wordsCount[word.toLowerCase()] ?
+            this.wordsCount[word.toLowerCase()] :
             0
     }
 }
