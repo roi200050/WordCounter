@@ -63,3 +63,9 @@ The REST API to the words counter app is described below.
     Content-Length: 2
 
     {}
+
+# Test client
+
+You can use *testWordCount.js* in *testClient* folder to check the rest api system
+
+    node .\testWordCount.js
