@@ -1,9 +1,9 @@
-var express = require('express');
-var app = express();
-var bodyParser = require("body-parser");
+const express = require('express');
+const app = express();
+const bodyParser = require("body-parser");
 
-var wordCounter = require("./utilities/wordCounter")
-var extractInput = require("./utilities/inputExtractor")
+const wordCounter = require("./utilities/wordCounter")
+const extractInput = require("./utilities/inputExtractor")
 
 // Init wordCounter utility
 var wc = new wordCounter()
@@ -19,14 +19,18 @@ app.use(bodyParser.json())
 // {input: String}
 app.post('/word/counter', function (req, res) {
     // Receives a text input and counts the number of appearances for each word in the input
-    extractInput(req.body.input).then(
+    extractInput(req.body.input, wc).then(
         words => {
-            wc.count(words);
+            // In url we pass data by chunks
+            if(words){
+                wc.count(words);
+            }
             res.status(200).send();
         },
         error =>{
             res.status(400).send(error);
-        } )
+        } 
+    );
 });
 
 

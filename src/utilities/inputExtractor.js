@@ -1,40 +1,30 @@
 const fs = require('fs');
 const path = require('path');
 
-function extractInput(input) {
+function extractInput(input, wc) {
     if (typeof input != 'string' || input.length == 0) {
         return new Promise((resolve, reject) => {
             reject("Cannot find input parameter (it could be empty?)")
         })
     }
     if (isValidUrl(input)) {
-        return new Promise((resolve, reject) => {
-            const http = require('http'),
-                https = require('https');
+        const http = require('http'),
+            https = require('https');
 
-            let client = http;
+        let client = http;
 
-            if (input.toString().indexOf("https") === 0) {
-                client = https;
-            }
+        if (input.toString().indexOf("https") === 0) {
+            client = https;
+        }
 
-            client.get(input, (resp) => {
-                let data = '';
-
-                // A nice improvement can be send words in chunks like we wanted to do with files
-                resp.on('data', (chunk) => {
-                    data += chunk;
-                });
-
-                // The whole response has been received. Print out the result.
-                resp.on('end', () => {
-                    resolve(data);
-                });
-
-            }).on("error", (err) => {
-                reject(err);
+        client.get(input, (resp) => {
+            resp.on('data', (chunk) => {
+                wc.count(chunk + "");
             });
+        }).on("error", (err) => {
+            reject(err);
         });
+        return Promise.resolve(null)
     }
     // A nice performance improvemant can be something like yield return here each word from file (to handle large files)
     if (isValidFilePath(input)) {
