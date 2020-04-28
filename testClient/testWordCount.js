@@ -73,7 +73,8 @@ async function testWordCount() {
     console.log("\n------------------------------------------------------------")
     console.log("Post: " + "LOCAL_PATH\\alice_in_wonderland.txt");
     try{
-        await postText("LOCAL_PATH\\alice_in_wonderland.txt");
+        // await postText("LOCAL_PATH\\alice_in_wonderland.txt");
+        await postText("C:\\Users\\Roi\\Downloads\\alice_in_wonderland.txt");
         console.log("Post finished");
     }
     catch(e){
@@ -92,7 +93,7 @@ async function testWordCount() {
     }, 1000);
 
 
-    // Test url support
+    // // Test url support
     console.log("\n------------------------------------------------------------")
     console.log("Post: " + "https://gist.githubusercontent.com/phillipj/4944029/raw/75ba2243dd5ec2875f629bf5d79f6c1e4b5a8b46/alice_in_wonderland.txt");
     try{
@@ -109,6 +110,30 @@ async function testWordCount() {
         await getCounter("long"));
 
     setTimeout(async() => {
+        console.log("\n------------------------------------------------------------")
+        console.log("After timeout:")
+        console.log("long" +
+            ": " +
+            await getCounter("long"));
+    }, 3000);
+
+
+    // Test url support
+    console.log("\n------------------------------------------------------------")
+    console.log("Post: " + "http://www.norvig.com/big.txt");
+    try {
+        await postText("http://www.norvig.com/big.txt");
+        console.log("Post finished");
+    } catch (e) {
+        console.log("Post FAILED");
+    }
+
+    console.log("\n------------------------------------------------------------")
+    console.log("long" +
+        ": " +
+        await getCounter("long"));
+
+    setTimeout(async () => {
         console.log("\n------------------------------------------------------------")
         console.log("After timeout:")
         console.log("long" +

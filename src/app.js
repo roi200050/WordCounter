@@ -1,9 +1,10 @@
-var express = require('express');
-var app = express();
-var bodyParser = require("body-parser");
+const express = require('express');
+const app = express();
+const bodyParser = require("body-parser");
 
-var wordCounter = require("./utilities/wordCounter")
-var extractInput = require("./utilities/inputExtractor")
+const wordCounter = require("./utilities/wordCounter")
+const asyncExtractInput = require("./utilities/inputExtractor")
+
 
 // Init wordCounter utility
 var wc = new wordCounter()
@@ -19,29 +20,25 @@ app.use(bodyParser.json())
 // {input: String}
 app.post('/word/counter', function (req, res) {
     // Receives a text input and counts the number of appearances for each word in the input
-    extractInput(req.body.input).then(
-        words => {
-            wc.count(words);
-            res.status(200).send();
+    asyncExtractInput(req.body.input, wc).then(
+        () => {
+            res.status(200).end();
         },
         error =>{
             res.status(400).send(error);
-        } )
+        } 
+    );
 });
 
 
 // GET /word/statistics 
 // QUERY {word: String}
-app.get('/word/statistics', function (req, res) {
+app.get('/word/statistics', async function (req, res) {
     // Receives a word and returns the number of times the word appeared so far (in all previous calls)
-    res.send("" + wc.getCounter(req.query.word));
+    res.status(200).send("" + await wc.getCounter(req.query.word));
 });
-
-
-
-
 
 // start the server in the port 3000 !
 app.listen(3000, function () {
-    console.log('Example app listening on port 3000.');
+    console.log('Words Counter app listening on port 3000.');
 });

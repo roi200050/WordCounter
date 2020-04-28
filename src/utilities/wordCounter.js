@@ -1,32 +1,39 @@
+const storage = require('node-persist');
+
 class wordCounter {
     constructor() {
-        // wordsCount Map will store each word as key, 
-        //   and number of appearance as value
-        this.wordsCount = {};
+        // wordCounterStorage is a thrd party library
+        //      that will store each word as key, 
+        //      and number of appearance as value
+        storage.init( {dir: './wordCounts'});
+        this.wordCounterStorage = storage;
+        this.cacheWordCounterStorage = new Map()
     }
 
-    count(input) {
-        return new Promise((resolve) => {
-            // Iterate over words
-            input.split(" ").forEach(word => {
-                // Clean the input, And lowercase
-                word = word.replace(/[ ,0-9_-]+/g, '').toLowerCase();
-
-                // Add to count
-                if (this.wordsCount[word]) {
-                    this.wordsCount[word]++
-                    return
+    async count(input) {
+        let counter, word;
+        // Iterate over words
+        for (word of input.split(/[\s,-/|]+/)) {
+            // Clean the input, And lowercase
+            word = word.toLowerCase().match(/[a-z-]+/);
+            // Add to count
+            if (word) {
+                word = word[0]
+                counter = this.cacheWordCounterStorage[word] || await this.wordCounterStorage.getItem(word)
+                if (counter) {
+                    this.wordCounterStorage.setItem(word, ++counter);
+                    this.cacheWordCounterStorage.set(word, counter)
+                } else {
+                    this.wordCounterStorage.setItem(word, 1);
+                    this.cacheWordCounterStorage.set(word, 1)
                 }
-                this.wordsCount[word] = 1
-            });
-            resolve()
-        });
+            }
+        }
     }
 
-    getCounter(word) {
-        return this.wordsCount[word.toLowerCase()] ?
-            this.wordsCount[word.toLowerCase()] :
-            0
+    async getCounter(word) {
+        let count = this.cacheWordCounterStorage[word] || await this.wordCounterStorage.getItem(word.toLowerCase())
+        return count || 0;
     }
 }
 
