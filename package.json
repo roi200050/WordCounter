@@ -17,7 +17,7 @@
   },
   "homepage": "https://github.com/roi200050/WordCounter#readme",
   "dependencies": {
-    "node-localstorage": "^2.1.6",
+    "node-persist": "^3.0.5",
     "request": "^2.81.0"
   }
 }

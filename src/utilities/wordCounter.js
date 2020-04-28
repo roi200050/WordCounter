@@ -1,33 +1,38 @@
-const LocalStorage = require('node-localstorage').LocalStorage;
+const storage = require('node-persist');
 
 class wordCounter {
     constructor() {
         // wordCounterStorage is a thrd party library
         //      that will store each word as key, 
         //      and number of appearance as value
-        this.wordCounterStorage = new LocalStorage('./WordCounterStorage');
+        storage.init( {dir: './wordCounts'});
+        this.wordCounterStorage = storage;
+        this.cacheWordCounterStorage = new Map()
     }
 
-    count(input) {
-        let counter;
+    async count(input) {
+        let counter, word;
         // Iterate over words
-        input.split(/[\s,-/|]+/).forEach((word) => {
+        for (word of input.split(/[\s,-/|]+/)) {
             // Clean the input, And lowercase
-            word = word.toLowerCase().match(/[a-z-]+/g);
+            word = word.toLowerCase().match(/[a-z-]+/);
             // Add to count
-            if (word){
-                counter = this.wordCounterStorage.getItem(word)
-                if(counter){
+            if (word) {
+                word = word[0]
+                counter = this.cacheWordCounterStorage[word] || await this.wordCounterStorage.getItem(word)
+                if (counter) {
                     this.wordCounterStorage.setItem(word, ++counter);
-                    return;
+                    this.cacheWordCounterStorage.set(word, counter)
+                } else {
+                    this.wordCounterStorage.setItem(word, 1);
+                    this.cacheWordCounterStorage.set(word, 1)
                 }
-                this.wordCounterStorage.setItem(word, 1);
             }
-        });
+        }
     }
 
-    getCounter(word) {
-        let count = this.wordCounterStorage.getItem(word.toLowerCase())
+    async getCounter(word) {
+        let count = this.cacheWordCounterStorage[word] || await this.wordCounterStorage.getItem(word.toLowerCase())
         return count || 0;
     }
 }
